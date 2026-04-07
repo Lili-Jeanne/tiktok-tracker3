@@ -1,6 +1,5 @@
 import json
 import os
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict
@@ -166,192 +165,38 @@ def build_prompt(raw_items: List[str], max_items: int = 60, max_trends: int = 12
 
 
 def parse_json_from_model(text: str) -> Dict:
-    text = text.strip()
-
-    # Keep the first balanced JSON object, even if model adds extra text.
-    start = text.find("{")
-    if start == -1:
-        raise ValueError("Aucun objet JSON trouvé dans la réponse IA.")
-
-    depth = 0
-    in_string = False
-    escaped = False
-    end = -1
-    for i, char in enumerate(text[start:], start=start):
-        if escaped:
-            escaped = False
-            continue
-        if char == "\\" and in_string:
-            escaped = True
-            continue
-        if char == '"':
-            in_string = not in_string
-            continue
-        if in_string:
-            continue
-        if char == "{":
-            depth += 1
-        elif char == "}":
-            depth -= 1
-            if depth == 0:
-                end = i
-                break
-
-    if end == -1:
-        raise ValueError("Objet JSON incomplet dans la réponse IA.")
-
-    json_candidate = text[start : end + 1]
-    # Fix common LLM JSON issue: trailing comma before closing } or ]
-    json_candidate = re.sub(r",\s*([}\]])", r"\1", json_candidate)
-
-    data = json.loads(json_candidate)
+    data = json.loads(text.strip())
     if "trends" not in data or not isinstance(data["trends"], list):
         raise ValueError("JSON invalide: clé 'trends' absente ou invalide")
     return data
 
 
-def extract_partial_trends_from_text(text: str, max_items: int = 12) -> Dict:
-    pair_pattern = re.compile(
-        r'"title"\s*:\s*"(?P<title>(?:\\.|[^"\\])*)"\s*,\s*"context"\s*:\s*"(?P<context>(?:\\.|[^"\\])*)"',
-        flags=re.DOTALL,
-    )
-    trends: List[Dict[str, str]] = []
-    for match in pair_pattern.finditer(text):
-        raw_title = match.group("title")
-        raw_context = match.group("context")
-        title = bytes(raw_title, "utf-8").decode("unicode_escape").strip()
-        context = bytes(raw_context, "utf-8").decode("unicode_escape").strip()
-        if not title:
-            continue
-        trends.append({"title": title[:120], "context": context[:240]})
-        if len(trends) >= max_items:
-            break
-    return {"trends": trends}
-
-
-def repair_json_with_hf(client: InferenceClient, broken_text: str) -> Dict:
-    repair_prompt = (
-        "Corrige la réponse suivante pour produire uniquement un JSON valide. "
-        "Structure exacte: {\"trends\":[{\"title\":\"...\",\"context\":\"...\"}]}. "
-        "Pas de markdown.\n\nRéponse à corriger:\n"
-        f"{broken_text[:7000]}"
-    )
-    completion = client.chat.completions.create(
-        model=MODEL_ID,
-        messages=[
-            {"role": "system", "content": "Tu réponds uniquement en JSON valide."},
-            {"role": "user", "content": repair_prompt},
-        ],
-        max_tokens=1200,
-        temperature=0.0,
-    )
-    repaired_text = completion.choices[0].message.content or ""
-    return parse_json_from_model(repaired_text)
-
-
-def local_fallback_filter(raw_items: List[str]) -> Dict:
-    keywords = [
-        "skibidi",
-        "sigma",
-        "rizz",
-        "gyatt",
-        "npc",
-        "brainrot",
-        "meme",
-        "tiktok",
-        "trend",
-        "core",
-        "forsure",
-    ]
-    trends = []
-    for item in raw_items:
-        low = item.lower()
-        if any(k in low for k in keywords):
-            trends.append(
-                {
-                    "title": item[:80],
-                    "context": "Signal détecté automatiquement depuis des sources slang/culture web.",
-                }
-            )
-        if len(trends) >= 20:
-            break
-    return {"trends": trends}
-
-
 def filter_with_huggingface(raw_items: List[str]) -> Dict:
     token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN")
     if not token:
-        print("[WARN] Aucun token Hugging Face détecté, fallback local utilisé.")
-        return local_fallback_filter(raw_items)
+        raise RuntimeError("HF_TOKEN manquant: impossible d'exécuter le mode IA only.")
 
     client = InferenceClient(model=MODEL_ID, token=token)
     prompt = build_prompt(raw_items, max_items=60, max_trends=12)
 
-    text = ""
-    try:
-        completion = client.chat.completions.create(
-            model=MODEL_ID,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Tu es un classifieur de micro-trends web. "
-                        "Tu réponds uniquement en JSON valide."
-                    ),
-                },
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=1400,
-            temperature=0.2,
-        )
-        text = completion.choices[0].message.content or ""
-    except Exception as chat_exc:
-        print(f"[WARN] Chat HF indisponible ({chat_exc}), tentative text-generation.")
-        try:
-            tg_prompt = (
-                "Tu es un classifieur de micro-trends web.\n"
-                "Tu réponds uniquement en JSON valide.\n\n"
-                f"{prompt}"
-            )
-            text = client.text_generation(
-                prompt=tg_prompt,
-                max_new_tokens=1400,
-                temperature=0.2,
-                return_full_text=False,
-            )
-        except Exception as tg_exc:
-            print(f"[WARN] Appel Hugging Face impossible ({tg_exc}), fallback local utilisé.")
-            return local_fallback_filter(raw_items)
-
-    try:
-        return parse_json_from_model(text)
-    except Exception as first_exc:
-        print(f"[WARN] Réponse IA non parsable ({first_exc}), tentative de relance courte.")
-        retry_prompt = build_prompt(raw_items, max_items=30, max_trends=8)
-        try:
-            retry_completion = client.chat.completions.create(
-                model=MODEL_ID,
-                messages=[
-                    {"role": "system", "content": "Réponds uniquement en JSON valide."},
-                    {"role": "user", "content": retry_prompt},
-                ],
-                max_tokens=1000,
-                temperature=0.1,
-            )
-            retry_text = retry_completion.choices[0].message.content or ""
-            return parse_json_from_model(retry_text)
-        except Exception as second_exc:
-            print(f"[WARN] Relance IA non parsable ({second_exc}), tentative de réparation JSON.")
-            try:
-                return repair_json_with_hf(client, text)
-            except Exception as repair_exc:
-                print(f"[WARN] Réparation JSON IA échouée ({repair_exc}), extraction partielle.")
-                partial = extract_partial_trends_from_text(text)
-                if partial["trends"]:
-                    print(f"[OK] Extraction partielle IA réussie ({len(partial['trends'])} trends).")
-                    return partial
-                print("[WARN] Aucune trend exploitable dans la réponse IA, fallback local utilisé.")
-                return local_fallback_filter(raw_items)
+    completion = client.chat.completions.create(
+        model=MODEL_ID,
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "Tu es un classifieur de micro-trends web. "
+                    "Tu réponds uniquement en JSON valide."
+                ),
+            },
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=1400,
+        temperature=0.2,
+        response_format={"type": "json_object"},
+    )
+    text = completion.choices[0].message.content or "{}"
+    return parse_json_from_model(text)
 
 
 def normalize_output(data: Dict) -> Dict:
@@ -368,21 +213,6 @@ def normalize_output(data: Dict) -> Dict:
     return normalized
 
 
-def ensure_minimum_output(payload: Dict, raw_items: List[str]) -> Dict:
-    if payload["trends"]:
-        return payload
-    backup = []
-    for item in raw_items[:8]:
-        backup.append(
-            {
-                "title": item[:120],
-                "context": "Terme candidat non confirmé par IA, a verifier manuellement.",
-            }
-        )
-    payload["trends"] = backup
-    return payload
-
-
 def save_output(payload: Dict) -> None:
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -392,12 +222,10 @@ def save_output(payload: Dict) -> None:
 def main() -> None:
     raw_items = collect_sources()
     if not raw_items:
-        print("[WARN] Aucun contenu récupéré, génération d'un fichier vide.")
-        payload = normalize_output({"trends": []})
-    else:
-        ai_output = filter_with_huggingface(raw_items)
-        payload = normalize_output(ai_output)
-        payload = ensure_minimum_output(payload, raw_items)
+        raise RuntimeError("Aucun contenu récupéré depuis les sources web.")
+
+    ai_output = filter_with_huggingface(raw_items)
+    payload = normalize_output(ai_output)
     save_output(payload)
 
 
