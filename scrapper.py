@@ -167,10 +167,44 @@ def build_prompt(raw_items: List[str]) -> str:
 
 def parse_json_from_model(text: str) -> Dict:
     text = text.strip()
-    json_block_match = re.search(r"\{.*\}", text, flags=re.DOTALL)
-    if json_block_match:
-        text = json_block_match.group(0)
-    data = json.loads(text)
+
+    # Keep the first balanced JSON object, even if model adds extra text.
+    start = text.find("{")
+    if start == -1:
+        raise ValueError("Aucun objet JSON trouvé dans la réponse IA.")
+
+    depth = 0
+    in_string = False
+    escaped = False
+    end = -1
+    for i, char in enumerate(text[start:], start=start):
+        if escaped:
+            escaped = False
+            continue
+        if char == "\\" and in_string:
+            escaped = True
+            continue
+        if char == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+
+    if end == -1:
+        raise ValueError("Objet JSON incomplet dans la réponse IA.")
+
+    json_candidate = text[start : end + 1]
+    # Fix common LLM JSON issue: trailing comma before closing } or ]
+    json_candidate = re.sub(r",\s*([}\]])", r"\1", json_candidate)
+
+    data = json.loads(json_candidate)
     if "trends" not in data or not isinstance(data["trends"], list):
         raise ValueError("JSON invalide: clé 'trends' absente ou invalide")
     return data
