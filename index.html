@@ -3,20 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trends Gen Alpha - Resultat</title>
+    <title>Trends Parents - Resultat Claude</title>
   </head>
   <body>
     <main>
-      <h1>Trends Gen Alpha / College</h1>
+      <h1>Trends Parents - Gen Alpha / College</h1>
       <p id="last-update">Chargement...</p>
-      <ul id="trends-list"></ul>
+      <p id="meta"></p>
+      <h2>Tendances</h2>
+      <div id="trends-list"></div>
+      <h2>Synthese</h2>
+      <pre id="summary"></pre>
       <p id="error-message" hidden></p>
     </main>
 
     <script>
       async function loadTrends() {
         const lastUpdateEl = document.getElementById("last-update");
+        const metaEl = document.getElementById("meta");
         const trendsListEl = document.getElementById("trends-list");
+        const summaryEl = document.getElementById("summary");
         const errorEl = document.getElementById("error-message");
 
         try {
@@ -26,25 +32,62 @@
           }
 
           const data = await response.json();
-          const trends = Array.isArray(data.trends) ? data.trends : [];
-          const lastUpdate = data.last_update || "inconnue";
+          const trends = Array.isArray(data)
+            ? data
+            : Array.isArray(data.tendances)
+              ? data.tendances
+              : Array.isArray(data.trends)
+                ? data.trends
+              : Array.isArray(data.items)
+                ? data.items
+                : [];
+          const synthese = data.synthese || {};
+          const lastUpdate = data.last_update || "non fournie";
+          const total = trends.length;
 
           lastUpdateEl.textContent = "Derniere mise a jour : " + lastUpdate;
+          metaEl.textContent = "Nombre de tendances : " + total;
           trendsListEl.innerHTML = "";
+          summaryEl.textContent = JSON.stringify(synthese, null, 2);
 
           if (trends.length === 0) {
-            const emptyItem = document.createElement("li");
-            emptyItem.textContent = "Aucune trend detectee pour le moment.";
-            trendsListEl.appendChild(emptyItem);
+            trendsListEl.textContent = "Aucune tendance detectee.";
             return;
           }
 
           for (const trend of trends) {
-            const item = document.createElement("li");
-            const title = trend.title || "Sans titre";
-            const context = trend.context || "Sans contexte";
-            item.textContent = title + " - " + context;
-            trendsListEl.appendChild(item);
+            const id = trend.id || "-";
+            const keyword = trend.k || "Sans mot-cle";
+            const desc = trend.d || "Sans explication";
+            const type = trend.t || "-";
+            const source = trend.s || "-";
+            const views = trend.v || "-";
+            const parentTrad = trend.p?.traduction || "-";
+            const parentReason = trend.p?.["raison d’usage"] || trend.p?.raison || "-";
+            const impactLevel = trend.i?.niveau || "-";
+            const impactRisk = trend.i?.risque || "-";
+            const watch = trend.a || "-";
+            const react = trend.r || "-";
+            const duration = trend.du || "-";
+            const reliability = trend.f || "-";
+
+            const block = document.createElement("pre");
+            block.textContent =
+              "ID: " + id + "\n" +
+              "Mot-cle: " + keyword + "\n" +
+              "Description: " + desc + "\n" +
+              "Type: " + type + "\n" +
+              "Source: " + source + "\n" +
+              "Vues estimees: " + views + "\n" +
+              "Parent - Traduction: " + parentTrad + "\n" +
+              "Parent - Pourquoi utilise: " + parentReason + "\n" +
+              "Impact - Niveau: " + impactLevel + "\n" +
+              "Impact - Risque: " + impactRisk + "\n" +
+              "A surveiller: " + watch + "\n" +
+              "Reponse parent: " + react + "\n" +
+              "Duree (semaines): " + duration + "\n" +
+              "Fiabilite: " + reliability;
+            trendsListEl.appendChild(block);
           }
         } catch (error) {
           lastUpdateEl.textContent = "Derniere mise a jour : indisponible";

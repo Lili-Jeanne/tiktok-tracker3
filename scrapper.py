@@ -2,231 +2,153 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Dict
-from urllib.parse import urljoin
+from typing import Any, Dict, List
 
 import requests
-from bs4 import BeautifulSoup
-from huggingface_hub import InferenceClient
-
-
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/124.0.0.0 Safari/537.36"
-)
-HEADERS = {"User-Agent": USER_AGENT, "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8"}
-
-SOURCE_URLS = {
-    "slang": [
-        "https://www.urbandictionary.com/",
-        "https://www.dictionnairedelazone.fr/",
-    ],
-    "culture_news": [
-        "https://www.dexerto.fr/divertissement/",
-        "https://www.konbini.com/",
-    ],
-}
-
-SOURCE_FALLBACK_URLS = {
-    "slang": [
-        "https://www.urbandictionary.com/define.php?term=skibidi",
-    ],
-    "culture_news": [
-        "https://www.dexerto.fr/",
-    ],
-}
 
 OUTPUT_FILE = Path("data/trends.json")
-MODEL_ID = "meta-llama/Llama-3.1-8B-Instruct"
+CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-3-5-haiku-latest")
+
+PROMPT_TEMPLATE = """Tu es un expert en culture internet, micro-tendances TikTok et comportements numériques des collégiens français (11–15 ans). Nous sommes [mettre la date du jour].
+⚙️ PROTOCOLE DE VALIDATION
+- Inclure une tendance si observée sur ≥3 comptes distincts ou ≥2 plateformes différentes (TikTok FR, Reels Instagram FR, YouTube Shorts, Snapchat Spotlight)
+- Sources : créateurs, reposts, compilations
+- Signal faible mais répété → inclure ; isolé ou douteux → exclure
+🎯 MISSION
+- Génère 15 micro-tendances actives (≤6 semaines)
+- Focus pour parents : comprendre leur enfant et identifier risques (pression sociale, imitation risquée, harcèlement, exposition)
+- Inclure : slang/expressions IRL, memes/brainrot, formats vidéos, comportements sociaux liés aux trends
+🧠 FILTRE PARENTAL
+- Pour chaque tendance, évaluer : compréhensible pour un parent ? impact possible ? risque ?
+📋 FORMAT DE SORTIE STRICT (JSON COMPACT, clé courte)
+- Clés :
+  - id : identifiant
+  - k : mot-clé / phrase virale
+  - d : explication simple (parent, 1 ligne)
+  - t : type [slang/meme/son/format/comportement]
+  - s : origine [plateforme — type contenu]
+  - v : vues estimées
+  - p : parent {traduction, raison d’usage}
+  - i : impact {niveau, risque}
+  - a : à surveiller si
+  - r : comment réagir (parent)
+  - du : durée vie estimée (semaines)
+  - f : score fiabilité (note/justification)
+⚠️ CONTRAINTES
+- Pas de tendances adultes (18+)
+- Pas de panique inutile
+- Pas de jargon incompréhensible
+- Pas de tendances mortes
+- Autorisé : humour absurde, langage débile/brainrot, tendances sociales (exclusion, imitation)
+📊 SYNTHÈSE FINALE
+- top3_comprendre : tendances clés pour décoder son enfant
+- top3_surveille : comportements ou dynamiques sociales à risque
+- normal : tendances sans impact
+- conseil : 3 lignes max pour parents
+🔹 **Sortie : JSON compact uniquement**, aucune lisibilité nécessaire, rien d’autre que le JSON."""
 
 
-def fetch_html(url: str, timeout: int = 20) -> tuple[str, str]:
-    response = requests.get(url, headers=HEADERS, timeout=timeout, allow_redirects=True)
-    response.raise_for_status()
-    return response.text, response.url
+def parse_model_json(raw_text: str) -> Dict[str, Any]:
+    start = raw_text.find("{")
+    end = raw_text.rfind("}")
+    if start == -1 or end == -1 or end <= start:
+        raise ValueError("Réponse Claude non JSON.")
+    payload = json.loads(raw_text[start : end + 1])
+    if "trends" not in payload or not isinstance(payload["trends"], list) or not payload["trends"]:
+        raise ValueError("JSON invalide: clé trends manquante ou vide.")
+    return payload
 
 
-def dedupe_keep_order(items: List[str]) -> List[str]:
-    seen = set()
-    out = []
-    for item in items:
-        key = item.lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append(item)
-    return out
+def build_prompt_with_today() -> str:
+    today = datetime.now(timezone.utc).strftime("%d/%m/%Y")
+    return PROMPT_TEMPLATE.replace("[mettre la date du jour]", today)
 
 
-def clean_text(text: str) -> str:
-    return " ".join(text.split()).strip()
+def call_claude_api(prompt: str) -> str:
+    api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
+    if not api_key:
+        raise RuntimeError("ANTHROPIC_API_KEY manquant.")
 
-
-def looks_like_noise(text: str) -> bool:
-    low = text.lower()
-    if len(text) < 4 or len(text) > 180:
-        return True
-    return low.startswith(
-        ("cookie", "privacy", "subscribe", "newsletter", "conditions", "mentions legales")
-    )
-
-
-def extract_urban_trending(html: str, base_url: str, max_items: int = 40) -> List[str]:
-    soup = BeautifulSoup(html, "html.parser")
-    results: List[str] = []
-    for link in soup.select("a[href*='define.php?term=']"):
-        term = clean_text(link.get_text(separator=" ", strip=True))
-        if not term or looks_like_noise(term):
-            continue
-        href = link.get("href")
-        if href:
-            term_url = urljoin(base_url, href)
-            results.append(f"{term} | {term_url}")
-        else:
-            results.append(term)
-        if len(results) >= max_items:
-            break
-    return dedupe_keep_order(results)
-
-
-def extract_titles_from_selectors(html: str, selectors: List[str], max_items: int = 40) -> List[str]:
-    soup = BeautifulSoup(html, "html.parser")
-    results: List[str] = []
-    for selector in selectors:
-        for element in soup.select(selector):
-            text = clean_text(element.get_text(separator=" ", strip=True))
-            if not text or looks_like_noise(text):
-                continue
-            results.append(text)
-            if len(results) >= max_items:
-                return dedupe_keep_order(results)
-    return dedupe_keep_order(results)
-
-
-def extract_by_source(source_name: str, url: str, html: str) -> List[str]:
-    if "urbandictionary.com" in url:
-        return extract_urban_trending(html=html, base_url=url, max_items=40)
-    if source_name == "slang":
-        return extract_titles_from_selectors(
-            html,
-            selectors=["h1", "h2", "h3", "li", "p strong", "article a"],
-            max_items=40,
-        )
-    return extract_titles_from_selectors(
-        html,
-        selectors=["h1", "h2", "h3", "article h2", "article h3", "a[rel='bookmark']"],
-        max_items=40,
-    )
-
-
-def collect_sources() -> List[str]:
-    collected: List[str] = []
-    for source_name, urls in SOURCE_URLS.items():
-        got_data_for_source = False
-        for url in urls:
-            try:
-                html, final_url = fetch_html(url)
-                snippets = extract_by_source(source_name=source_name, url=final_url, html=html)
-                collected.extend(snippets)
-                got_data_for_source = got_data_for_source or bool(snippets)
-                print(f"[OK] {source_name}: {url} -> {len(snippets)} éléments")
-            except Exception as exc:
-                print(f"[WARN] Source inaccessible ({source_name}): {url} ({exc})")
-
-        if got_data_for_source:
-            continue
-
-        for fallback_url in SOURCE_FALLBACK_URLS.get(source_name, []):
-            try:
-                html, final_url = fetch_html(fallback_url)
-                snippets = extract_by_source(source_name=source_name, url=final_url, html=html)
-                collected.extend(snippets)
-                print(
-                    f"[OK] {source_name} fallback: {fallback_url} -> {len(snippets)} éléments"
-                )
-            except Exception as exc:
-                print(f"[WARN] Fallback inaccessible ({source_name}): {fallback_url} ({exc})")
-
-    return dedupe_keep_order(collected)
-
-
-def build_prompt(raw_items: List[str], max_items: int = 60, max_trends: int = 12) -> str:
-    payload = json.dumps(raw_items[:max_items], ensure_ascii=False)
-    return (
-        "Voici une liste de termes et titres web : "
-        f"{payload}\n\n"
-        "Filtre et garde uniquement les micro-trends, memes absurdes ou expressions "
-        "typiques des collégiens français (11-15 ans). Ignore les news sérieuses.\n"
-        "Format de sortie : JSON pur.\n"
-        f'Retourne exactement: {{"trends":[{{"title":"...","context":"..."}}]}} avec maximum {max_trends} trends.\n'
-        "Pas de markdown. Pas de texte avant/après le JSON."
-    )
-
-
-def parse_json_from_model(text: str) -> Dict:
-    data = json.loads(text.strip())
-    if "trends" not in data or not isinstance(data["trends"], list):
-        raise ValueError("JSON invalide: clé 'trends' absente ou invalide")
-    return data
-
-
-def filter_with_huggingface(raw_items: List[str]) -> Dict:
-    token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN")
-    if not token:
-        raise RuntimeError("HF_TOKEN manquant: impossible d'exécuter le mode IA only.")
-
-    client = InferenceClient(model=MODEL_ID, token=token)
-    prompt = build_prompt(raw_items, max_items=60, max_trends=12)
-
-    completion = client.chat.completions.create(
-        model=MODEL_ID,
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "Tu es un classifieur de micro-trends web. "
-                    "Tu réponds uniquement en JSON valide."
-                ),
-            },
-            {"role": "user", "content": prompt},
-        ],
-        max_tokens=1400,
-        temperature=0.2,
-        response_format={"type": "json_object"},
-    )
-    text = completion.choices[0].message.content or "{}"
-    return parse_json_from_model(text)
-
-
-def normalize_output(data: Dict) -> Dict:
-    normalized = {
-        "last_update": datetime.now(timezone.utc).isoformat(),
-        "trends": [],
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
     }
-    for item in data.get("trends", []):
-        title = str(item.get("title", "")).strip()
-        context = str(item.get("context", "")).strip()
-        if not title:
+    body = {
+        "model": CLAUDE_MODEL,
+        "max_tokens": 3000,
+        "temperature": 0.2,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    response = requests.post(CLAUDE_API_URL, headers=headers, json=body, timeout=120)
+    response.raise_for_status()
+    payload = response.json()
+    chunks: List[Dict[str, Any]] = payload.get("content", [])
+    text_parts = [str(chunk.get("text", "")) for chunk in chunks if chunk.get("type") == "text"]
+    output_text = "".join(text_parts).strip()
+    if not output_text:
+        raise RuntimeError("Réponse Claude vide.")
+    return output_text
+
+
+def normalize_compact_output(payload: Dict[str, Any]) -> Dict[str, Any]:
+    trends: List[Dict[str, Any]] = []
+    for idx, item in enumerate(payload.get("trends", []), start=1):
+        if not isinstance(item, dict):
             continue
-        normalized["trends"].append({"title": title[:120], "context": context[:240]})
-    return normalized
+        parent_info = item.get("p", {}) if isinstance(item.get("p"), dict) else {}
+        impact_info = item.get("i", {}) if isinstance(item.get("i"), dict) else {}
+        normalized_item = {
+            "id": str(item.get("id", idx)),
+            "k": str(item.get("k", "")).strip(),
+            "d": str(item.get("d", "")).strip(),
+            "t": str(item.get("t", "")).strip(),
+            "s": str(item.get("s", "")).strip(),
+            "v": str(item.get("v", "")).strip(),
+            "p": {
+                "traduction": str(parent_info.get("traduction", "")).strip(),
+                "raison d’usage": str(parent_info.get("raison d’usage", "")).strip(),
+            },
+            "i": {
+                "niveau": str(impact_info.get("niveau", "")).strip(),
+                "risque": str(impact_info.get("risque", "")).strip(),
+            },
+            "a": str(item.get("a", "")).strip(),
+            "r": str(item.get("r", "")).strip(),
+            "du": str(item.get("du", "")).strip(),
+            "f": str(item.get("f", "")).strip(),
+        }
+        if normalized_item["k"]:
+            trends.append(normalized_item)
+
+    return {
+        "last_update": datetime.now(timezone.utc).isoformat(),
+        "trends": trends[:15],
+        "top3_comprendre": payload.get("top3_comprendre", []),
+        "top3_surveille": payload.get("top3_surveille", []),
+        "normal": payload.get("normal", []),
+        "conseil": payload.get("conseil", ""),
+    }
 
 
-def save_output(payload: Dict) -> None:
+def save_output(payload: Dict[str, Any], raw_response: str) -> None:
+    output = {
+        **payload,
+        "generated_by": CLAUDE_MODEL,
+        "raw_response": raw_response[:12000],
+    }
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    OUTPUT_FILE.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[OK] Résultat écrit dans {OUTPUT_FILE}")
 
 
 def main() -> None:
-    raw_items = collect_sources()
-    if not raw_items:
-        raise RuntimeError("Aucun contenu récupéré depuis les sources web.")
-
-    ai_output = filter_with_huggingface(raw_items)
-    payload = normalize_output(ai_output)
-    save_output(payload)
+    prompt = build_prompt_with_today()
+    raw_response = call_claude_api(prompt)
+    parsed = parse_model_json(raw_response)
+    compact_output = normalize_compact_output(parsed)
+    save_output(compact_output, raw_response)
 
 
 if __name__ == "__main__":
