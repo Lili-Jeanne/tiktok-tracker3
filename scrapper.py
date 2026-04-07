@@ -152,15 +152,15 @@ def collect_sources() -> List[str]:
     return dedupe_keep_order(collected)
 
 
-def build_prompt(raw_items: List[str]) -> str:
-    payload = json.dumps(raw_items[:100], ensure_ascii=False)
+def build_prompt(raw_items: List[str], max_items: int = 60, max_trends: int = 12) -> str:
+    payload = json.dumps(raw_items[:max_items], ensure_ascii=False)
     return (
         "Voici une liste de termes et titres web : "
         f"{payload}\n\n"
         "Filtre et garde uniquement les micro-trends, memes absurdes ou expressions "
         "typiques des collégiens français (11-15 ans). Ignore les news sérieuses.\n"
         "Format de sortie : JSON pur.\n"
-        'Retourne exactement: {"trends":[{"title":"...","context":"..."}]}\n'
+        f'Retourne exactement: {{"trends":[{{"title":"...","context":"..."}}]}} avec maximum {max_trends} trends.\n'
         "Pas de markdown. Pas de texte avant/après le JSON."
     )
 
@@ -246,7 +246,7 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
         return local_fallback_filter(raw_items)
 
     client = InferenceClient(model=MODEL_ID, token=token)
-    prompt = build_prompt(raw_items)
+    prompt = build_prompt(raw_items, max_items=60, max_trends=12)
 
     text = ""
     try:
@@ -262,7 +262,7 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
                 },
                 {"role": "user", "content": prompt},
             ],
-            max_tokens=1000,
+            max_tokens=1400,
             temperature=0.2,
         )
         text = completion.choices[0].message.content or ""
@@ -276,7 +276,7 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
             )
             text = client.text_generation(
                 prompt=tg_prompt,
-                max_new_tokens=1000,
+                max_new_tokens=1400,
                 temperature=0.2,
                 return_full_text=False,
             )
@@ -286,9 +286,24 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
 
     try:
         return parse_json_from_model(text)
-    except Exception as exc:
-        print(f"[WARN] Réponse IA non parsable ({exc}), fallback local utilisé.")
-        return local_fallback_filter(raw_items)
+    except Exception as first_exc:
+        print(f"[WARN] Réponse IA non parsable ({first_exc}), tentative de relance courte.")
+        retry_prompt = build_prompt(raw_items, max_items=30, max_trends=8)
+        try:
+            retry_completion = client.chat.completions.create(
+                model=MODEL_ID,
+                messages=[
+                    {"role": "system", "content": "Réponds uniquement en JSON valide."},
+                    {"role": "user", "content": retry_prompt},
+                ],
+                max_tokens=1000,
+                temperature=0.1,
+            )
+            retry_text = retry_completion.choices[0].message.content or ""
+            return parse_json_from_model(retry_text)
+        except Exception as second_exc:
+            print(f"[WARN] Réponse IA toujours non parsable ({second_exc}), fallback local utilisé.")
+            return local_fallback_filter(raw_items)
 
 
 def normalize_output(data: Dict) -> Dict:
