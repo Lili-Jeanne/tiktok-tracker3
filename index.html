@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trends Gen Alpha - Resultat</title>
+  </head>
+  <body>
+    <main>
+      <h1>Trends Gen Alpha / College</h1>
+      <p id="last-update">Chargement...</p>
+      <ul id="trends-list"></ul>
+      <p id="error-message" hidden></p>
+    </main>
+
+    <script>
+      async function loadTrends() {
+        const lastUpdateEl = document.getElementById("last-update");
+        const trendsListEl = document.getElementById("trends-list");
+        const errorEl = document.getElementById("error-message");
+
+        try {
+          const response = await fetch("./data/trends.json", { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error("Impossible de charger data/trends.json");
+          }
+
+          const data = await response.json();
+          const trends = Array.isArray(data.trends) ? data.trends : [];
+          const lastUpdate = data.last_update || "inconnue";
+
+          lastUpdateEl.textContent = "Derniere mise a jour : " + lastUpdate;
+          trendsListEl.innerHTML = "";
+
+          if (trends.length === 0) {
+            const emptyItem = document.createElement("li");
+            emptyItem.textContent = "Aucune trend detectee pour le moment.";
+            trendsListEl.appendChild(emptyItem);
+            return;
+          }
+
+          for (const trend of trends) {
+            const item = document.createElement("li");
+            const title = trend.title || "Sans titre";
+            const context = trend.context || "Sans contexte";
+            item.textContent = title + " - " + context;
+            trendsListEl.appendChild(item);
+          }
+        } catch (error) {
+          lastUpdateEl.textContent = "Derniere mise a jour : indisponible";
+          errorEl.hidden = false;
+          errorEl.textContent = "Erreur : " + error.message;
+        }
+      }
+
+      loadTrends();
+    </script>
+  </body>
+</html>
