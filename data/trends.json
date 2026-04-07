@@ -1,37 +1,57 @@
 {
-  "last_update": "2026-04-07T10:53:12.124559+00:00",
+  "last_update": "2026-04-07T10:55:27.726748+00:00",
   "trends": [
     {
-      "title": "sundowning | https://www.urbandictionary.com/define.php?term=sundowning",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "sundowning",
+      "context": "un phénomène observé chez les personnes souffrant de démence, caractérisé par une agitation et une agitation accrues en fin de journée"
     },
     {
-      "title": "cognitive | https://www.urbandictionary.com/define.php?term=cognitive",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "Party Pocket",
+      "context": "un terme utilisé pour désigner un petit sac ou une pochette utilisé pour transporter des objets de valeur lors d'une sortie"
     },
     {
-      "title": "afternoon | https://www.urbandictionary.com/define.php?term=afternoon",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "East Bumfuck",
+      "context": "un terme utilisé pour désigner un endroit lointain ou inconnu"
     },
     {
-      "title": "dementia | https://www.urbandictionary.com/define.php?term=dementia",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "Gorehound",
+      "context": "un terme utilisé pour désigner quelqu'un qui aime regarder des films violents ou gore"
     },
     {
-      "title": "in the morning | https://www.urbandictionary.com/define.php?term=in%20the%20morning",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "bimbofication",
+      "context": "un terme utilisé pour désigner le processus de transformation d'une personne en une personne stupide ou superficielle"
     },
     {
-      "title": "confused | https://www.urbandictionary.com/define.php?term=confused",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "kink",
+      "context": "un terme utilisé pour désigner un comportement ou une préférence sexuelle inhabituelle"
     },
     {
-      "title": "evening | https://www.urbandictionary.com/define.php?term=evening",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "Le Dictionnaire de la Z one",
+      "context": "un dictionnaire de mots et expressions utilisés dans les banlieues"
     },
     {
-      "title": "Party Pocket | https://www.urbandictionary.com/define.php?term=Party%20Pocket",
-      "context": "Terme candidat non confirmé par IA, a verifier manuellement."
+      "title": "Mot du jour",
+      "context": "un terme utilisé pour désigner le mot ou l'expression du jour"
+    },
+    {
+      "title": "Excusez-moi mais je crois que j'ai un ticket",
+      "context": "une expression utilisée pour désigner un problème ou un problème"
+    },
+    {
+      "title": "Connexion",
+      "context": "un terme utilisé pour désigner la connexion à un réseau ou à un site web"
+    },
+    {
+      "title": "Signaler un bug",
+      "context": "un terme utilisé pour désigner un problème technique"
+    },
+    {
+      "title": "Suivre le Dictionnaire de la Zone",
+      "context": "un terme utilisé pour désigner la possibilité de suivre le dictionnaire de mots et expressions"
+    },
+    {
+      "title": "Verlan",
+      "context": "un langage argotique utilisé dans les banlieues"
     }
   ]
 }
