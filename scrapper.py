@@ -20,12 +20,21 @@ HEADERS = {"User-Agent": USER_AGENT, "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8
 
 SOURCE_URLS = {
     "slang": [
-        "https://www.urbandictionary.com/trending.php",
-        "https://dictionnaire.orthodidacte.com/article/argot-des-jeunes",
+        "https://www.urbandictionary.com/",
+        "https://www.dictionnairedelazone.fr/",
     ],
     "culture_news": [
-        "https://www.dexerto.com/fr/entertainment/",
-        "https://www.konbini.com/popculture/",
+        "https://www.dexerto.fr/divertissement/",
+        "https://www.konbini.com/",
+    ],
+}
+
+SOURCE_FALLBACK_URLS = {
+    "slang": [
+        "https://www.urbandictionary.com/define.php?term=skibidi",
+    ],
+    "culture_news": [
+        "https://www.dexerto.fr/",
     ],
 }
 
@@ -33,10 +42,10 @@ OUTPUT_FILE = Path("data/trends.json")
 MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3"
 
 
-def fetch_html(url: str, timeout: int = 20) -> str:
-    response = requests.get(url, headers=HEADERS, timeout=timeout)
+def fetch_html(url: str, timeout: int = 20) -> tuple[str, str]:
+    response = requests.get(url, headers=HEADERS, timeout=timeout, allow_redirects=True)
     response.raise_for_status()
-    return response.text
+    return response.text, response.url
 
 
 def dedupe_keep_order(items: List[str]) -> List[str]:
@@ -115,14 +124,30 @@ def extract_by_source(source_name: str, url: str, html: str) -> List[str]:
 def collect_sources() -> List[str]:
     collected: List[str] = []
     for source_name, urls in SOURCE_URLS.items():
+        got_data_for_source = False
         for url in urls:
             try:
-                html = fetch_html(url)
-                snippets = extract_by_source(source_name=source_name, url=url, html=html)
+                html, final_url = fetch_html(url)
+                snippets = extract_by_source(source_name=source_name, url=final_url, html=html)
                 collected.extend(snippets)
+                got_data_for_source = got_data_for_source or bool(snippets)
                 print(f"[OK] {source_name}: {url} -> {len(snippets)} éléments")
             except Exception as exc:
                 print(f"[WARN] Source inaccessible ({source_name}): {url} ({exc})")
+
+        if got_data_for_source:
+            continue
+
+        for fallback_url in SOURCE_FALLBACK_URLS.get(source_name, []):
+            try:
+                html, final_url = fetch_html(fallback_url)
+                snippets = extract_by_source(source_name=source_name, url=final_url, html=html)
+                collected.extend(snippets)
+                print(
+                    f"[OK] {source_name} fallback: {fallback_url} -> {len(snippets)} éléments"
+                )
+            except Exception as exc:
+                print(f"[WARN] Fallback inaccessible ({source_name}): {fallback_url} ({exc})")
 
     return dedupe_keep_order(collected)
 
