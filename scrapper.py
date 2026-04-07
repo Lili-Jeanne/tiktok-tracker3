@@ -39,7 +39,7 @@ SOURCE_FALLBACK_URLS = {
 }
 
 OUTPUT_FILE = Path("data/trends.json")
-MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3"
+MODEL_ID = "meta-llama/Llama-3.1-8B-Instruct"
 
 
 def fetch_html(url: str, timeout: int = 20) -> tuple[str, str]:
@@ -214,6 +214,7 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
     client = InferenceClient(model=MODEL_ID, token=token)
     prompt = build_prompt(raw_items)
 
+    text = ""
     try:
         completion = client.chat.completions.create(
             model=MODEL_ID,
@@ -231,9 +232,23 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
             temperature=0.2,
         )
         text = completion.choices[0].message.content or ""
-    except Exception as exc:
-        print(f"[WARN] Appel Hugging Face impossible ({exc}), fallback local utilisé.")
-        return local_fallback_filter(raw_items)
+    except Exception as chat_exc:
+        print(f"[WARN] Chat HF indisponible ({chat_exc}), tentative text-generation.")
+        try:
+            tg_prompt = (
+                "Tu es un classifieur de micro-trends web.\n"
+                "Tu réponds uniquement en JSON valide.\n\n"
+                f"{prompt}"
+            )
+            text = client.text_generation(
+                prompt=tg_prompt,
+                max_new_tokens=1000,
+                temperature=0.2,
+                return_full_text=False,
+            )
+        except Exception as tg_exc:
+            print(f"[WARN] Appel Hugging Face impossible ({tg_exc}), fallback local utilisé.")
+            return local_fallback_filter(raw_items)
 
     try:
         return parse_json_from_model(text)
