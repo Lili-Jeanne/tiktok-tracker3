@@ -214,22 +214,27 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
     client = InferenceClient(model=MODEL_ID, token=token)
     prompt = build_prompt(raw_items)
 
-    completion = client.chat.completions.create(
-        model=MODEL_ID,
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "Tu es un classifieur de micro-trends web. "
-                    "Tu réponds uniquement en JSON valide."
-                ),
-            },
-            {"role": "user", "content": prompt},
-        ],
-        max_tokens=1000,
-        temperature=0.2,
-    )
-    text = completion.choices[0].message.content or ""
+    try:
+        completion = client.chat.completions.create(
+            model=MODEL_ID,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Tu es un classifieur de micro-trends web. "
+                        "Tu réponds uniquement en JSON valide."
+                    ),
+                },
+                {"role": "user", "content": prompt},
+            ],
+            max_tokens=1000,
+            temperature=0.2,
+        )
+        text = completion.choices[0].message.content or ""
+    except Exception as exc:
+        print(f"[WARN] Appel Hugging Face impossible ({exc}), fallback local utilisé.")
+        return local_fallback_filter(raw_items)
+
     try:
         return parse_json_from_model(text)
     except Exception as exc:
