@@ -210,6 +210,45 @@ def parse_json_from_model(text: str) -> Dict:
     return data
 
 
+def extract_partial_trends_from_text(text: str, max_items: int = 12) -> Dict:
+    pair_pattern = re.compile(
+        r'"title"\s*:\s*"(?P<title>(?:\\.|[^"\\])*)"\s*,\s*"context"\s*:\s*"(?P<context>(?:\\.|[^"\\])*)"',
+        flags=re.DOTALL,
+    )
+    trends: List[Dict[str, str]] = []
+    for match in pair_pattern.finditer(text):
+        raw_title = match.group("title")
+        raw_context = match.group("context")
+        title = bytes(raw_title, "utf-8").decode("unicode_escape").strip()
+        context = bytes(raw_context, "utf-8").decode("unicode_escape").strip()
+        if not title:
+            continue
+        trends.append({"title": title[:120], "context": context[:240]})
+        if len(trends) >= max_items:
+            break
+    return {"trends": trends}
+
+
+def repair_json_with_hf(client: InferenceClient, broken_text: str) -> Dict:
+    repair_prompt = (
+        "Corrige la réponse suivante pour produire uniquement un JSON valide. "
+        "Structure exacte: {\"trends\":[{\"title\":\"...\",\"context\":\"...\"}]}. "
+        "Pas de markdown.\n\nRéponse à corriger:\n"
+        f"{broken_text[:7000]}"
+    )
+    completion = client.chat.completions.create(
+        model=MODEL_ID,
+        messages=[
+            {"role": "system", "content": "Tu réponds uniquement en JSON valide."},
+            {"role": "user", "content": repair_prompt},
+        ],
+        max_tokens=1200,
+        temperature=0.0,
+    )
+    repaired_text = completion.choices[0].message.content or ""
+    return parse_json_from_model(repaired_text)
+
+
 def local_fallback_filter(raw_items: List[str]) -> Dict:
     keywords = [
         "skibidi",
@@ -302,8 +341,17 @@ def filter_with_huggingface(raw_items: List[str]) -> Dict:
             retry_text = retry_completion.choices[0].message.content or ""
             return parse_json_from_model(retry_text)
         except Exception as second_exc:
-            print(f"[WARN] Réponse IA toujours non parsable ({second_exc}), fallback local utilisé.")
-            return local_fallback_filter(raw_items)
+            print(f"[WARN] Relance IA non parsable ({second_exc}), tentative de réparation JSON.")
+            try:
+                return repair_json_with_hf(client, text)
+            except Exception as repair_exc:
+                print(f"[WARN] Réparation JSON IA échouée ({repair_exc}), extraction partielle.")
+                partial = extract_partial_trends_from_text(text)
+                if partial["trends"]:
+                    print(f"[OK] Extraction partielle IA réussie ({len(partial['trends'])} trends).")
+                    return partial
+                print("[WARN] Aucune trend exploitable dans la réponse IA, fallback local utilisé.")
+                return local_fallback_filter(raw_items)
 
 
 def normalize_output(data: Dict) -> Dict:
