@@ -1,12 +1,10 @@
 import json
 import os
 import re
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 from urllib.parse import quote
 import anthropic
-import os
 
 import requests
 
@@ -63,10 +61,8 @@ def parse_model_json(raw_text: str) -> Dict[str, Any]:
     if start == -1 or end == -1 or end <= start:
         raise ValueError("Réponse Claude non JSON.")
     payload = json.loads(raw_text[start : end + 1])
-    if "trends" not in payload or payload["trends"] is None:
-        payload["trends"] = []
-    if not isinstance(payload["trends"], list):
-        raise ValueError("JSON invalide: clé trends doit être une liste.")
+    if not isinstance(payload, dict):
+        raise ValueError("JSON invalide: objet racine attendu.")
     return payload
 
 
@@ -180,12 +176,12 @@ def fetch_hashtag_stats(hashtag_slug: str) -> Optional[Dict[str, Any]]:
     return parse_hashtag_stats_from_text(response.text, hashtag_slug)
 
 
-def enrich_and_filter_trends_with_hashtag_stats(trends: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    output: List[Dict[str, Any]] = []
+def enrich_trends_with_hashtag_stats(trends: List[Dict[str, Any]]) -> None:
     for trend in trends:
-        keyword = str(trend.get("k", "")).strip()
-        if not keyword:
-            continue
+        hashtag_hint = str(trend.get("m", "")).strip()
+        title_hint = str(trend.get("ti", "")).strip()
+        legacy_keyword = str(trend.get("k", "")).strip()
+        keyword = hashtag_hint or legacy_keyword or title_hint
 
         stats: Optional[Dict[str, Any]] = None
         used_hashtag = ""
@@ -200,61 +196,23 @@ def enrich_and_filter_trends_with_hashtag_stats(trends: List[Dict[str, Any]]) ->
         trend["Overall Posts"] = stats["Overall Posts"] if stats else ""
         trend["Overall Views"] = stats["Overall Views"] if stats else ""
         trend["Views / Post"] = stats["Views / Post"] if stats else ""
-        output.append(trend)
-
-    return output
 
 
-def normalize_compact_output(payload: Dict[str, Any]) -> Dict[str, Any]:
-    trends: List[Dict[str, Any]] = []
-    for idx, item in enumerate(payload.get("trends", []), start=1):
-        if not isinstance(item, dict):
-            continue
-        parent_info = item.get("p", {}) if isinstance(item.get("p"), dict) else {}
-        impact_info = item.get("i", {}) if isinstance(item.get("i"), dict) else {}
-        normalized_item = {
-            "id": str(item.get("id", idx)),
-            "k": str(item.get("k", "")).strip(),
-            "d": str(item.get("d", "")).strip(),
-            "t": str(item.get("t", "")).strip(),
-            "s": str(item.get("s", "")).strip(),
-            "v": str(item.get("v", "")).strip(),
-            "p": {
-                "traduction": str(parent_info.get("traduction", "")).strip(),
-                "raison d’usage": str(parent_info.get("raison d’usage", "")).strip(),
-            },
-            "i": {
-                "niveau": str(impact_info.get("niveau", "")).strip(),
-                "risque": str(impact_info.get("risque", "")).strip(),
-            },
-            "a": str(item.get("a", "")).strip(),
-            "r": str(item.get("r", "")).strip(),
-            "du": str(item.get("du", "")).strip(),
-            "f": str(item.get("f", "")).strip(),
-        }
-        if normalized_item["k"]:
-            trends.append(normalized_item)
+def apply_hashtag_enrichment(payload: Dict[str, Any]) -> Dict[str, Any]:
+    trends_value = payload.get("trends")
+    if not isinstance(trends_value, list):
+        trends_value = payload.get("tendances")
+    if not isinstance(trends_value, list):
+        return payload
 
-    filtered_trends = enrich_and_filter_trends_with_hashtag_stats(trends[:10])
-
-    return {
-        "last_update": datetime.now(timezone.utc).isoformat(),
-        "trends": filtered_trends,
-        "top3_comprendre": payload.get("top3_comprendre", []),
-        "top3_surveille": payload.get("top3_surveille", []),
-        "normal": payload.get("normal", []),
-        "conseil": payload.get("conseil", ""),
-    }
+    trends: List[Dict[str, Any]] = [item for item in trends_value if isinstance(item, dict)]
+    enrich_trends_with_hashtag_stats(trends[:10])
+    return payload
 
 
-def save_output(payload: Dict[str, Any], raw_response: str) -> None:
-    output = {
-        **payload,
-        "generated_by": CLAUDE_MODEL,
-        "raw_response": raw_response[:12000],
-    }
+def save_output(payload: Dict[str, Any]) -> None:
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_FILE.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+    OUTPUT_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[OK] Résultat écrit dans {OUTPUT_FILE}")
 
 
@@ -262,8 +220,8 @@ def main() -> None:
     prompt = build_prompt_with_today()
     raw_response = call_claude_api(prompt)
     parsed = parse_model_json(raw_response)
-    compact_output = normalize_compact_output(parsed)
-    save_output(compact_output, raw_response)
+    output_payload = apply_hashtag_enrichment(parsed)
+    save_output(output_payload)
 
 
 if __name__ == "__main__":
