@@ -5,12 +5,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import quote
+import anthropic
+import os
 
 import requests
 
 OUTPUT_FILE = Path("data/trends.json")
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
-CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
+CLAUDE_MODEL = "claude-sonnet-4-6" 
 TIKTOK_HASHTAGS_URL = "https://tiktokhashtags.com/hashtag/{slug}/"
 
 PROMPT_TEMPLATE = """Tu es un expert en culture internet, micro-tendances TikTok et comportements numériques des collégiens français (11–15 ans). Nous sommes [mettre la date du jour].
@@ -76,25 +78,22 @@ def call_claude_api(prompt: str) -> str:
     if not api_key:
         raise RuntimeError("ANTHROPIC_API_KEY manquant.")
 
-    headers = {
-        "x-api-key": api_key,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-    }
-    body = {
-        "model": CLAUDE_MODEL,
-        "max_tokens": 3000,
-        "temperature": 0.2,
-        "messages": [{"role": "user", "content": prompt}],
-    }
-    response = requests.post(CLAUDE_API_URL, headers=headers, json=body, timeout=120)
-    response.raise_for_status()
-    payload = response.json()
-    chunks: List[Dict[str, Any]] = payload.get("content", [])
-    text_parts = [str(chunk.get("text", "")) for chunk in chunks if chunk.get("type") == "text"]
-    output_text = "".join(text_parts).strip()
+    client = anthropic.Anthropic(api_key=api_key)
+
+    message = client.messages.create(
+        model=CLAUDE_MODEL,
+        max_tokens=3000,
+        temperature=0.2,
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    output_text = "".join(
+        block.text for block in message.content if block.type == "text"
+    ).strip()
+
     if not output_text:
         raise RuntimeError("Réponse Claude vide.")
+
     return output_text
 
 
