@@ -12,8 +12,6 @@
       <p id="meta"></p>
       <h2>Tendances</h2>
       <div id="trends-list"></div>
-      <h2>Synthese</h2>
-      <pre id="summary"></pre>
       <p id="error-message" hidden></p>
     </main>
 
@@ -22,7 +20,6 @@
         const lastUpdateEl = document.getElementById("last-update");
         const metaEl = document.getElementById("meta");
         const trendsListEl = document.getElementById("trends-list");
-        const summaryEl = document.getElementById("summary");
         const errorEl = document.getElementById("error-message");
 
         try {
@@ -41,14 +38,12 @@
               : Array.isArray(data.items)
                 ? data.items
                 : [];
-          const synthese = data.synthese || {};
           const lastUpdate = data.last_update || "non fournie";
           const total = trends.length;
 
           lastUpdateEl.textContent = "Derniere mise a jour : " + lastUpdate;
           metaEl.textContent = "Nombre de tendances : " + total;
           trendsListEl.innerHTML = "";
-          summaryEl.textContent = JSON.stringify(synthese, null, 2);
 
           if (trends.length === 0) {
             trendsListEl.textContent = "Aucune tendance detectee.";
@@ -57,11 +52,14 @@
 
           for (const trend of trends) {
             const id = trend.id || "-";
-            const keyword = trend.k || "Sans mot-cle";
+            const keyword = trend.k || trend.ti || trend.title || "Sans mot-cle";
+            const hashtag = trend.hashtag || trend.m || "-";
             const desc = trend.d || "Sans explication";
-            const type = trend.t || "-";
+            const type = trend.t || trend.ty || "-";
             const source = trend.s || "-";
-            const views = trend.v || "-";
+            const exampleLink = trend.v || trend.context || "-";
+            const startDate = trend.da || "-";
+            const category = trend.c || "-";
             const parentTrad = trend.p?.traduction || "-";
             const parentReason = trend.p?.["raison d’usage"] || trend.p?.raison || "-";
             const impactLevel = trend.i?.niveau || "-";
@@ -70,15 +68,21 @@
             const react = trend.r || "-";
             const duration = trend.du || "-";
             const reliability = trend.f || "-";
+            const overallPosts = trend["Overall Posts"] || "-";
+            const overallViews = trend["Overall Views"] || "-";
+            const viewsPerPost = trend["Views / Post"] || "-";
 
             const block = document.createElement("pre");
             block.textContent =
               "ID: " + id + "\n" +
               "Mot-cle: " + keyword + "\n" +
+              "Hashtag: " + hashtag + "\n" +
               "Description: " + desc + "\n" +
               "Type: " + type + "\n" +
               "Source: " + source + "\n" +
-              "Vues estimees: " + views + "\n" +
+              "Lien exemple: " + exampleLink + "\n" +
+              "Date de depart: " + startDate + "\n" +
+              "Categorie: " + category + "\n" +
               "Parent - Traduction: " + parentTrad + "\n" +
               "Parent - Pourquoi utilise: " + parentReason + "\n" +
               "Impact - Niveau: " + impactLevel + "\n" +
@@ -86,7 +90,10 @@
               "A surveiller: " + watch + "\n" +
               "Reponse parent: " + react + "\n" +
               "Duree (semaines): " + duration + "\n" +
-              "Fiabilite: " + reliability;
+              "Fiabilite: " + reliability + "\n" +
+              "Overall Posts: " + overallPosts + "\n" +
+              "Overall Views: " + overallViews + "\n" +
+              "Views / Post: " + viewsPerPost;
             trendsListEl.appendChild(block);
           }
         } catch (error) {
