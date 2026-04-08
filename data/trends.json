@@ -1,10 +1,243 @@
 {
-  "last_update": "2026-04-08T12:56:13.784923+00:00",
-  "trends": [],
-  "top3_comprendre": [],
-  "top3_surveille": [],
-  "normal": [],
-  "conseil": "",
-  "generated_by": "claude-sonnet-4-6",
-  "raw_response": "```json\n{\"tendances\":[{\"ti\":\"Aura Farming\",\"m\":\"#aurafarm\",\"d\":\"Les ados accumulent des 'points d'aura' imaginaires en faisant des trucs stylés, calmes ou impressionnants devant leurs amis. C'est une monnaie sociale fictive : plus t'as d'aura, plus t'es cool. Se joue IRL et en vidéo.\",\"ty\":[\"slang\",\"comportement\",\"format\"],\"v\":\"https://www.tiktok.com/tag/aurafarm\",\"da\":\"mi-février 2026\",\"du\":8,\"c\":\"morale\"},{\"ti\":\"NPC Freeze Challenge\",\"m\":\"#npcfreeze\",\"d\":\"Un ado se fige comme un PNJ de jeu vidéo en plein milieu d'une situation normale (couloir de collège, repas de famille) et attend que quelqu'un le 'débloque' avec une phrase ou un geste précis. Filmé en caméra cachée.\",\"ty\":[\"format\",\"comportement\",\"son\"],\"v\":\"https://www.tiktok.com/tag/npcfreeze\",\"da\":\"début mars 2026\",\"du\":5,\"c\":\"virtuelle\"},{\"ti\":\"Looksmaxxing Collège\",\"m\":\"#looksmaxxfr\",\"d\":\"Tendance venue des forums incels américains mais filtrée chez les 12-15 ans : tutoriels pour 'optimiser' son apparence (mewing, skincare, posture, coupe de cheveux). Présenté comme du self-care mais avec un vocabulaire de notation physique.\",\"ty\":[\"format\",\"comportement\",\"slang\"],\"v\":\"https://www.tiktok.com/tag/looksmaxxfr\",\"da\":\"janvier 2026\",\"du\":10,\"c\":\"physique\"},{\"ti\":\"Sigma Brainrot Edits\",\"m\":\"#sigmabrainrot\",\"d\":\"Montages vidéo absurdes mélangeant des personnages 'sigma' (loups, hommes mystérieux, animaux sérieux) avec des sons déformés et des textes motivationnels débiles. Humour total de second degré, mais valorise une image de mec solitaire et supérieur.\",\"ty\":[\"meme\",\"son\",\"format\"],\"v\":\"https://www.tiktok.com/tag/sigmabrainrot\",\"da\":\"fin février 2026\",\"du\":6,\"c\":\"virtuelle\"},{\"ti\":\"Glazing Wars\",\"m\":\"#glazingwar\",\"d\":\"'Glazer' quelqu'un = le complimenter de façon exagérée et sarcastique. Les ados se 'glazent' mutuellement en commentaire ou IRL pour se moquer ou créer des clans. Peut vite devenir de la moquerie déguisée en compliment.\",\"ty\":[\"slang\",\"comportement\"],\"v\":\"https://www.tiktok.com/tag/glazingwar\",\"da\":\"mi-mars 2026\",\"du\":5,\"c\":\"morale\"},{\"ti\":\"Delulu Lore Posting\",\"m\":\"#dululore\",\"d\":\"Les ados inventent des 'lores' (histoires de fond) complètement délirantes sur eux-mêmes ou leurs amis et les postent sérieusement. Ex : 'mon lore c'est que je suis un ancien dieu exilé dans un collège de banlieue'. Humour absurde, identité fictive.\",\"ty\":[\"format\",\"meme\",\"slang\"],\"v\":\"https://www.tiktok.com/tag/dululore\",\"da\":\"début mars 2026\",\"du\":6,\"c\":\"virtuelle\"},{\"ti\":\"Rizz Check IRL\",\"m\":\"#rizzcheck\",\"d\":\"Un ado filme en caméra cachée un ami en train d'essayer de parler à quelqu'un qu'il trouve beau/belle, puis note son 'rizz' (charme, aisance sociale) devant tout le groupe. Pression sociale intense, humiliation possible si le score est bas.\",\"ty\":[\"comportement\",\"format\",\"slang\"],\"v\":\"https://www.tiktok.com/tag/rizzcheck\",\"da\":\"fin février 2026\",\"du\":7,\"c\":\"morale\"},{\"ti\":\"Skibidi Phonk Transition\",\"m\":\"#skibidiphonk\",\"d\":\"Format vidéo ultra-rapide : transition brutale entre une tenue normale et une tenue 'drip' (stylée) sur un son phonk déformé avec voix skibidi. Très populaire sur Shorts et Reels. Inoffensif mais crée une pression sur l'apparence vestimentaire.\",\"ty\":[\"son\",\"format\",\"comportement\"],\"v\":\"https://www.tiktok.com/tag/skibidiphonk\",\"da\":\"mi-mars 2026\",\"du\":4,\"c\":\"physique\"},{\"ti\":\"Caught in 4K Classement\",\"m\":\"#caughtin4kfr\",\"d\":\"Filmer discrètement un camarade dans une situation embarrassante (rater une question, tomber, manger bizarrement) et poster avec le texte 'caught in 4K'. Présenté comme de l'humour mais peut constituer du cyberharcèlement.\",\"ty\":[\"format\",\"comportement\",\"slang\"],\"v\":\"https://www.tiktok.com/tag/caughtin4kfr\",\"da\":\"début mars 2026\",\"du\":6,\"c\":\"morale\"},{\"ti\":\"Brain Rot Tier List\",\"m\":\"#brainrottierlist\",\"d\":\"Les ados créent des tier lists (classements de A à F) de leurs amis, profs, ou personnages brainrot selon des critères absurdes. Partagées en story Snap ou TikTok. Peut générer de l'exclusion si quelqu'un se retrouve en bas du classement.\",\"ty\":[\"format\",\"meme\",\"comportement\"],\"v\":\"https://www.tiktok.com/tag/brainrottierlist\",\"da\":\"fin février 2026\",\"du\":7,\"c\":\"morale\"}],\"synthese\":{\"top3_comprendre\":[\"Aura Farming — comprendre la monnaie sociale invisible de votre enfant\",\"Delulu Lore Posting — décoder son humour absurde et son besoin d'identité fictive\",\"Sigma Brainrot Edits — saisir pourquoi il envoie des vidéos de loups avec de la musique bizarre\"],\"top3_surveiller\":[\"Rizz Check IRL — risque réel d'humiliation filmée et de pression sociale sur le charme\",\"Caught in 4K Classement — frontière floue entre humour et cyberharcèlement, vidéos sans consentement\",\"Looksmaxxing Collège — vocabulaire de notation physique qui peut nourrir une dysmorphie ou une obsession de l'apparence\"],\"normal\":[\"NPC Freeze Challenge\",\"Skibidi Phonk Transition\",\"Brain Rot Tier List (si entre amis proches)\",\"Glazing Wars (si clairement second degré)\"],\"conseil\":\"Ne pas paniquer face au langage bizarre ou aux vidéos absurdes : c'est souvent de l'humour de génération. En revanche, si votre enfant filme ses camarades sans leur accord ou parle de 'noter' les gens physiquement, ouvrez la conversation sans jugement. Demandez-lui de vous expliquer ses memes : ça crée du lien et vous informe mieux que n'importe quelle surveillance.\"}}\n```"
+  "tendances": [
+    {
+      "ti": "Aura Farming",
+      "m": "#aurafarm",
+      "d": "Les ados accumulent des 'points d'aura' imaginaires en faisant des trucs stylés, calmes ou inattendus devant leurs amis. C'est une monnaie sociale fictive : plus t'as d'aura, plus t'es cool. Se joue IRL et en vidéo.",
+      "ty": [
+        "slang",
+        "comportement",
+        "format"
+      ],
+      "v": "https://www.tiktok.com/tag/aurafarm",
+      "da": "mi-février 2026",
+      "du": 8,
+      "c": [
+        "morale"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "NPC Freeze Challenge",
+      "m": "#npcfreeze",
+      "d": "Un ado se fige comme un PNJ de jeu vidéo dans un lieu public (couloir de collège, bus, supermarché) pendant que ses amis filment les réactions des gens autour. Variante du NPC trend mais version statique et silencieuse.",
+      "ty": [
+        "format",
+        "comportement",
+        "son"
+      ],
+      "v": "https://www.tiktok.com/tag/npcfreeze",
+      "da": "début mars 2026",
+      "du": 5,
+      "c": [
+        "physique",
+        "virtuelle"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Looksmaxxing Collège",
+      "m": "#looksmaxxfr",
+      "d": "Des collégiens (surtout garçons 12-15 ans) partagent leurs routines pour 'optimiser' leur apparence : soins de peau, posture, coupe de cheveux, mâcher des chewing-gums pour la mâchoire. Venu de la manosphère adulte, filtré en version ado FR.",
+      "ty": [
+        "format",
+        "comportement"
+      ],
+      "v": "https://www.tiktok.com/tag/looksmaxxfr",
+      "da": "janvier 2026",
+      "du": 10,
+      "c": [
+        "physique",
+        "morale"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Sigma Brainrot Quotes",
+      "m": "#sigmabrainrot",
+      "d": "Des vidéos avec des phrases absurdes et volontairement stupides sur fond de musique épique ou de montages de loups/requins. Exemple : 'Un sigma ne dort pas, il recharge.' Humour second degré mais certains ados y croient vraiment.",
+      "ty": [
+        "meme",
+        "son",
+        "format"
+      ],
+      "v": "https://www.tiktok.com/tag/sigmabrainrot",
+      "da": "fin janvier 2026",
+      "du": 9,
+      "c": [
+        "virtuelle"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Rizz Test IRL",
+      "m": "#rizztest",
+      "d": "Un ado 'teste son rizz' (son charme/séduction) en abordant un inconnu ou un camarade avec une phrase préparée, filmé en caché par un ami. Le résultat est noté par les spectateurs. Peut créer des situations de harcèlement ou de malaise.",
+      "ty": [
+        "comportement",
+        "format"
+      ],
+      "v": "https://www.tiktok.com/tag/rizztest",
+      "da": "mi-mars 2026",
+      "du": 4,
+      "c": [
+        "morale",
+        "physique"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Delulu Arc",
+      "m": "#deluluarc",
+      "d": "Les ados se filment en train de raconter leurs fantasmes sociaux totalement irréalistes (devenir célèbre, sortir avec une star) en les présentant comme un 'arc narratif' de leur vie. Humour auto-dérision mais peut masquer une vraie déconnexion.",
+      "ty": [
+        "slang",
+        "format",
+        "meme"
+      ],
+      "v": "https://www.tiktok.com/tag/deluluarc",
+      "da": "fin février 2026",
+      "du": 6,
+      "c": [
+        "morale",
+        "virtuelle"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Skibidi Phonk Transition",
+      "m": "#skibidiphonk",
+      "d": "Format vidéo ultra-rapide : transition brutale entre une tenue banale et une tenue 'stylée' sur un son phonk (musique électronique agressive). Très populaire sur Reels et Shorts. Inoffensif mais crée une pression sur l'apparence vestimentaire.",
+      "ty": [
+        "son",
+        "format"
+      ],
+      "v": "https://www.tiktok.com/tag/skibidiphonk",
+      "da": "début mars 2026",
+      "du": 5,
+      "c": [
+        "physique",
+        "virtuelle"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Ghosting Challenge",
+      "m": "#ghostingchallenge",
+      "d": "Des groupes d'ados décident collectivement d'ignorer totalement un camarade pendant une journée entière, filment ses réactions à son insu et partagent les vidéos. Présenté comme une blague mais constitue du harcèlement caractérisé.",
+      "ty": [
+        "comportement"
+      ],
+      "v": "https://www.tiktok.com/tag/ghostingchallenge",
+      "da": "mi-mars 2026",
+      "du": 3,
+      "c": [
+        "morale"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Brain Rot Vocabulary",
+      "m": "#brainrotfr",
+      "d": "Un vocabulaire absurde et codé envahit les conversations IRL des collégiens : 'gyatt', 'fanum tax', 'no cap fr fr', 'based', 'L+ratio'. Les parents ne comprennent rien, c'est voulu. Sert à créer un groupe in/out entre ceux qui savent et les autres.",
+      "ty": [
+        "slang"
+      ],
+      "v": "https://www.tiktok.com/tag/brainrotfr",
+      "da": "octobre 2025",
+      "du": 20,
+      "c": [
+        "virtuelle",
+        "morale"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    },
+    {
+      "ti": "Soft Life Flex",
+      "m": "#softlifefr",
+      "d": "Des collégiens filment leur quotidien en le rendant esthétique et 'luxueux' : petit-déjeuner soigné, chambre rangée, tenue coordonnée. Crée une pression de perfection et de comparaison sociale intense, surtout chez les filles 12-14 ans.",
+      "ty": [
+        "format",
+        "comportement"
+      ],
+      "v": "https://www.tiktok.com/tag/softlifefr",
+      "da": "début février 2026",
+      "du": 8,
+      "c": [
+        "morale",
+        "physique"
+      ],
+      "hashtag": "",
+      "Overall Posts": "",
+      "Overall Views": "",
+      "Views / Post": ""
+    }
+  ],
+  "synthese": {
+    "top3_comprendre": [
+      {
+        "ti": "Brain Rot Vocabulary",
+        "raison": "Si votre enfant parle une langue que vous ne comprenez pas, c'est normal et intentionnel. Apprenez quelques mots pour maintenir le dialogue sans paraître intrusif."
+      },
+      {
+        "ti": "Aura Farming",
+        "raison": "Comprendre ce système de validation sociale fictif explique beaucoup de comportements : pourquoi votre enfant fait des choses 'pour l'aura' devant ses amis."
+      },
+      {
+        "ti": "Delulu Arc",
+        "raison": "L'humour auto-dérision de cette génération est souvent mal compris par les adultes. Ce n'est pas forcément un signe de mal-être, mais mérite attention si répété."
+      }
+    ],
+    "top3_surveiller": [
+      {
+        "ti": "Ghosting Challenge",
+        "risque": "ÉLEVÉ",
+        "detail": "C'est du harcèlement filmé. Si votre enfant participe ou en est victime, agir immédiatement avec l'établissement scolaire."
+      },
+      {
+        "ti": "Rizz Test IRL",
+        "risque": "MODÉRÉ",
+        "detail": "Peut dégénérer en harcèlement ou mise en scène humiliante. Vérifier si votre enfant filme des inconnus à leur insu."
+      },
+      {
+        "ti": "Looksmaxxing Collège",
+        "risque": "MODÉRÉ",
+        "detail": "La pression sur l'apparence physique à 12-15 ans est réelle. Surveiller une obsession excessive pour le corps ou les routines beauté."
+      }
+    ],
+    "normal": [
+      "Skibidi Phonk Transition",
+      "Sigma Brainrot Quotes",
+      "Soft Life Flex",
+      "NPC Freeze Challenge"
+    ],
+    "conseil": "Ne paniquez pas face au vocabulaire bizarre ou aux memes incompréhensibles : c'est du langage générationnel normal. Concentrez-vous sur les comportements IRL (exclusion, filmage à l'insu, obsession corporelle). La meilleure approche : poser des questions sincères sans juger, et regarder quelques vidéos ensemble pour comprendre leur univers sans l'interdire."
+  }
 }
