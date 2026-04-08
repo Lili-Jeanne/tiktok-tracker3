@@ -51,49 +51,33 @@
           }
 
           for (const trend of trends) {
-            const id = trend.id || "-";
             const keyword = trend.k || trend.ti || trend.title || "Sans mot-cle";
             const hashtag = trend.hashtag || trend.m || "-";
             const desc = trend.d || "Sans explication";
             const type = trend.t || trend.ty || "-";
-            const source = trend.s || "-";
             const exampleLink = trend.v || trend.context || "-";
             const startDate = trend.da || "-";
             const category = trend.c || "-";
-            const parentTrad = trend.p?.traduction || "-";
-            const parentReason = trend.p?.["raison d’usage"] || trend.p?.raison || "-";
-            const impactLevel = trend.i?.niveau || "-";
-            const impactRisk = trend.i?.risque || "-";
-            const watch = trend.a || "-";
-            const react = trend.r || "-";
             const duration = trend.du || "-";
-            const reliability = trend.f || "-";
             const overallPosts = trend["Overall Posts"] || "-";
             const overallViews = trend["Overall Views"] || "-";
             const viewsPerPost = trend["Views / Post"] || "-";
+            const videoViews = trend.video_views || "-";
 
             const block = document.createElement("pre");
             block.textContent =
-              "ID: " + id + "\n" +
               "Mot-cle: " + keyword + "\n" +
               "Hashtag: " + hashtag + "\n" +
               "Description: " + desc + "\n" +
               "Type: " + type + "\n" +
-              "Source: " + source + "\n" +
               "Lien exemple: " + exampleLink + "\n" +
               "Date de depart: " + startDate + "\n" +
               "Categorie: " + category + "\n" +
-              "Parent - Traduction: " + parentTrad + "\n" +
-              "Parent - Pourquoi utilise: " + parentReason + "\n" +
-              "Impact - Niveau: " + impactLevel + "\n" +
-              "Impact - Risque: " + impactRisk + "\n" +
-              "A surveiller: " + watch + "\n" +
-              "Reponse parent: " + react + "\n" +
               "Duree (semaines): " + duration + "\n" +
-              "Fiabilite: " + reliability + "\n" +
               "Overall Posts: " + overallPosts + "\n" +
               "Overall Views: " + overallViews + "\n" +
-              "Views / Post: " + viewsPerPost;
+              "Views / Post: " + viewsPerPost + "\n" +
+              "Vues video: " + videoViews;
             trendsListEl.appendChild(block);
           }
         } catch (error) {

@@ -75,7 +75,7 @@ def call_claude_api(prompt: str) -> str:
 
     message = client.messages.create(
         model=CLAUDE_MODEL,
-        max_tokens=3000,
+        max_tokens=4500,
         temperature=0.2,
         messages=[{"role": "user", "content": prompt}],
     )
