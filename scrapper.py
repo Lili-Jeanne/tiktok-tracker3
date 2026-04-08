@@ -63,8 +63,10 @@ def parse_model_json(raw_text: str) -> Dict[str, Any]:
     if start == -1 or end == -1 or end <= start:
         raise ValueError("Réponse Claude non JSON.")
     payload = json.loads(raw_text[start : end + 1])
-    if "trends" not in payload or not isinstance(payload["trends"], list) or not payload["trends"]:
-        raise ValueError("JSON invalide: clé trends manquante ou vide.")
+    if "trends" not in payload or payload["trends"] is None:
+        payload["trends"] = []
+    if not isinstance(payload["trends"], list):
+        raise ValueError("JSON invalide: clé trends doit être une liste.")
     return payload
 
 
