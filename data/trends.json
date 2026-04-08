@@ -1,210 +1,237 @@
 {
   "tendances": [
     {
-      "ti": "Aura Farming",
-      "m": "#aurafarm",
-      "d": "Les ados accumulent des 'points d'aura' imaginaires en faisant des trucs cool, calmes ou stylés devant leurs potes. C'est une monnaie sociale fictive qui mesure le charisme. Perdre son aura = être ridicule en public.",
+      "ti": "Aura Check",
+      "m": "#auracheck",
+      "d": "Les ados se filment ou filment leurs amis pour 'mesurer' leur aura (charisme, cool factor) via des commentaires ou des votes en story. Celui qui a 'zéro aura' est moqué, celui qui en a 'beaucoup' est célébré. Crée une hiérarchie sociale visible.",
       "ty": [
         "slang",
         "comportement",
-        "morale"
+        "format"
       ],
-      "v": "https://www.tiktok.com/@noahbgolf1/video/7609482404125789454",
+      "v": "https://www.tiktok.com/@zrex.edit/video/7575632525687655682",
       "da": "mi-février 2026",
       "du": 8,
-      "c": "morale",
+      "c": [
+        "morale"
+      ],
       "hashtag": "#aura",
       "Overall Posts": "458.9 Thousand",
       "Overall Views": "4.6 Billion",
-      "Views / Post": "",
-      "video_views": 46600000
+      "Views / Post": "10,024",
+      "video_views": 16000000
     },
     {
       "ti": "NPC Freeze Challenge",
       "m": "#npcfreeze",
-      "d": "Un ado se fige comme un PNJ de jeu vidéo dans un lieu public (couloir de collège, bus, supermarché) et attend que quelqu'un le touche pour 'redémarrer'. Filmé en caméra cachée par des complices.",
+      "d": "Les ados imitent des personnages de jeux vidéo (NPC) qui se figent brusquement, souvent en plein cours ou dans les couloirs du collège, filmés par des complices. Peut perturber la classe et mettre en scène des camarades sans leur accord.",
       "ty": [
-        "format",
         "comportement",
+        "format",
         "son"
       ],
       "v": "https://www.tiktok.com/@stewart.bobagaurd/video/7318722139799014687",
       "da": "début mars 2026",
       "du": 5,
-      "c": "physique",
+      "c": [
+        "physique",
+        "virtuelle"
+      ],
       "hashtag": "#npc",
       "Overall Posts": "552.9 Thousand",
       "Overall Views": "14.6 Billion",
-      "Views / Post": "",
+      "Views / Post": "26,406",
       "video_views": 31200000
     },
     {
-      "ti": "Looksmaxxing Collège",
-      "m": "#looksmaxxfr",
-      "d": "Les collégiens (surtout garçons) suivent des routines beauté/fitness extrêmes vues sur TikTok pour 'maximiser' leur apparence. Inclut jeûne, mewing, skincare agressive. Pression énorme sur l'image corporelle.",
+      "ti": "Skibidi Lore Collège",
+      "m": "#skibidilore",
+      "d": "Adaptation locale du brainrot 'Skibidi Toilet' : les ados créent des 'lores' (histoires absurdes) sur leurs profs ou camarades en les intégrant dans l'univers Skibidi. Peut virer au moquage déguisé en humour.",
       "ty": [
-        "comportement",
+        "meme",
+        "slang",
         "format"
       ],
-      "v": "https://www.tiktok.com/@trevorlarcom/video/7507709912768777518",
-      "da": "janvier 2026",
-      "du": 10,
-      "c": "physique",
-      "hashtag": "#looksmaxx",
-      "Overall Posts": "2.9 Thousand",
-      "Overall Views": "166.4 Million",
-      "Views / Post": "",
-      "video_views": 7300000
+      "v": "https://www.tiktok.com/@onlymoviesfr/video/7622762604808719638",
+      "da": "fin février 2026",
+      "du": 6,
+      "c": [
+        "virtuelle",
+        "morale"
+      ],
+      "hashtag": "#skibidi",
+      "Overall Posts": "177.9 Thousand",
+      "Overall Views": "5.4 Billion",
+      "Views / Post": "30,354",
+      "video_views": 20900000
     },
     {
-      "ti": "Rizz Test IRL",
-      "m": "#rizztest",
-      "d": "Un ado aborde un inconnu ou un camarade avec une phrase de drague absurde scriptée, filmé par des amis. Le but est de mesurer son 'rizz' (charme/séduction). Peut créer des situations de harcèlement ou de malaise.",
+      "ti": "Roman Empire Perso",
+      "m": "#monromanempire",
+      "d": "Chaque ado révèle 'son Roman Empire' : la chose à laquelle il pense tout le temps sans raison (un son, une scène de film, un souvenir gênant). Format confessionnel très partagé en story Snap et Reels. Tendance saine mais révélatrice d'anxiétés parfois.",
       "ty": [
-        "comportement",
         "format",
         "slang"
       ],
-      "v": "https://www.tiktok.com/@yungemann/video/7241366281016937770",
-      "da": "fin février 2026",
-      "du": 6,
-      "c": "morale",
-      "hashtag": "#rizz",
-      "Overall Posts": "1.1 Million",
-      "Overall Views": "34.7 Billion",
-      "Views / Post": "",
-      "video_views": 27600000
+      "v": "https://www.tiktok.com/@victornoir12/video/7565904785715629334",
+      "da": "mi-mars 2026",
+      "du": 4,
+      "c": [
+        "morale",
+        "virtuelle"
+      ],
+      "hashtag": "#roman",
+      "Overall Posts": "761.7 Thousand",
+      "Overall Views": "8 Billion",
+      "Views / Post": "10,503",
+      "video_views": 2800000
     },
     {
-      "ti": "Brainrot Vocal",
-      "m": "#brainrotvocal",
-      "d": "Les ados récitent à voix haute des phrases absurdes issues du brainrot internet (ex: 'Bombardiro Crocodilo', 'Tralalero Tralala') dans des contextes sérieux (classe, repas de famille) pour provoquer le rire ou déstabiliser les adultes.",
+      "ti": "Delulu Arc",
+      "m": "#deluluarc",
+      "d": "'Delulu' = délirant/dans son monde. Les ados se filment en train d'assumer des fantasmes absurdes (être célèbre, sortir avec une star) sur un ton second degré. Peut normaliser le déni de réalité ou créer des moqueries envers ceux qui 'y croient vraiment'.",
+      "ty": [
+        "slang",
+        "format",
+        "meme"
+      ],
+      "v": "https://www.tiktok.com/@hey_its_ethannn/video/7557865775697038623",
+      "da": "début mars 2026",
+      "du": 5,
+      "c": [
+        "morale",
+        "virtuelle"
+      ],
+      "hashtag": "#delulu",
+      "Overall Posts": "340.5 Thousand",
+      "Overall Views": "4.7 Billion",
+      "Views / Post": "13,803",
+      "video_views": 5800000
+    },
+    {
+      "ti": "Looksmaxxing Collège",
+      "m": "#looksmaxxing",
+      "d": "Tendance venue de forums masculins : optimiser son apparence au maximum (soins de peau, mâcher du chewing-gum pour la mâchoire, posture). Chez les 11-15 ans, peut générer une obsession du physique, des comparaisons toxiques et de l'anxiété corporelle, surtout chez les garçons.",
+      "ty": [
+        "comportement",
+        "slang"
+      ],
+      "v": "https://www.tiktok.com/tag/looksmaxxing",
+      "da": "janvier 2026",
+      "du": 10,
+      "c": [
+        "physique",
+        "morale"
+      ],
+      "hashtag": "#looksmaxxing",
+      "Overall Posts": "40.4 Thousand",
+      "Overall Views": "1.4 Billion",
+      "Views / Post": "34,653",
+      "video_views": 0
+    },
+    {
+      "ti": "Sigma Grindset Junior",
+      "m": "#sigmagrindset",
+      "d": "Les ados (surtout garçons) postent des vidéos parodiques ou semi-sérieuses sur la 'mentalité sigma' : être seul, ne pas avoir besoin des autres, travailler dur. Mélange d'humour et de vraie valorisation de l'isolement social comme signe de force.",
       "ty": [
         "slang",
         "meme",
-        "comportement"
-      ],
-      "v": "https://www.tiktok.com/@hugopelaezzz/video/7534187712291589407",
-      "da": "mars 2026",
-      "du": 5,
-      "c": "virtuelle",
-      "hashtag": "#brainrot",
-      "Overall Posts": "11.7 Thousand",
-      "Overall Views": "81.3 Million",
-      "Views / Post": "",
-      "video_views": 60300000
-    },
-    {
-      "ti": "Sigma Silence",
-      "m": "#sigmasilence",
-      "d": "Refuser de répondre à une question d'un adulte ou d'un prof en gardant un regard fixe et un visage neutre, inspiré du mème 'sigma male'. Filmé ou raconté ensuite comme un acte de rébellion cool.",
-      "ty": [
-        "comportement",
-        "meme",
-        "slang"
-      ],
-      "v": "https://www.tiktok.com/@greapaxcherri/video/7190292112632548610",
-      "da": "mi-mars 2026",
-      "du": 4,
-      "c": "morale",
-      "hashtag": "#sigma",
-      "Overall Posts": "2.9 Million",
-      "Overall Views": "82.8 Billion",
-      "Views / Post": "",
-      "video_views": 197300000
-    },
-    {
-      "ti": "Outfit Rating Snap",
-      "m": "#outfitratingsnap",
-      "d": "Les élèves s'envoient des photos de leurs tenues sur Snapchat pour être notés par leurs contacts. Les mauvaises notes circulent parfois sans consentement. Fort risque de moqueries et d'exclusion sociale.",
-      "ty": [
-        "comportement",
         "format"
       ],
-      "v": "https://www.tiktok.com/@leanortizz/video/7616892873723759902",
-      "da": "début mars 2026",
-      "du": 6,
-      "c": "morale",
-      "hashtag": "#outfit",
-      "Overall Posts": "11.9 Million",
-      "Overall Views": "142.2 Billion",
-      "Views / Post": "",
-      "video_views": 17400000
+      "v": "https://www.tiktok.com/@sergiidriss/video/7185675394731740421",
+      "da": "mi-février 2026",
+      "du": 7,
+      "c": [
+        "morale",
+        "virtuelle"
+      ],
+      "hashtag": "#sigmagrindset",
+      "Overall Posts": "292 Thousand",
+      "Overall Views": "7.9 Billion",
+      "Views / Post": "27,055",
+      "video_views": 5200000
     },
     {
-      "ti": "POV Trauma Dump",
-      "m": "#povtraumadump",
-      "d": "Format vidéo où l'ado joue une scène émotionnelle intense (abandon, trahison, dépression) en POV face caméra avec une musique triste. Très regardé, peut normaliser la surexposition émotionnelle et attirer des commentaires toxiques.",
+      "ti": "POV Harcèlement Inversé",
+      "m": "#povbullying",
+      "d": "Format vidéo où l'ado joue le rôle du 'harceleur' ou de la 'victime' dans des sketchs très réalistes. Présenté comme de la fiction/humour, mais reproduit des dynamiques de harcèlement réelles et peut être utilisé pour cibler indirectement un camarade.",
       "ty": [
         "format",
-        "son"
+        "comportement"
       ],
-      "v": "https://www.tiktok.com/@lightskinnigga/video/7621523759022837022",
-      "da": "fin janvier 2026",
-      "du": 9,
-      "c": "virtuelle",
+      "v": "https://www.tiktok.com/@elongatedmusk/video/6972295779780218117",
+      "da": "début mars 2026",
+      "du": 5,
+      "c": [
+        "morale",
+        "physique"
+      ],
       "hashtag": "#pov",
       "Overall Posts": "50.2 Million",
       "Overall Views": "1 Trillion",
-      "Views / Post": "",
-      "video_views": 99000000
+      "Views / Post": "19,920",
+      "video_views": 29500000
     },
     {
-      "ti": "Glazing Wars",
-      "m": "#glazingwar",
-      "d": "Deux clans s'affrontent pour savoir qui 'glaze' (flatte excessivement) le mieux une célébrité ou un camarade. Peut virer au cyberharcèlement inversé : celui qui ne glaze pas assez est exclu ou moqué.",
+      "ti": "Brain Rot Sound Spam",
+      "m": "#brainrotsound",
+      "d": "Les ados inondent les commentaires, les chats Snap et Discord de sons/phrases absurdes répétées ('bombardino coccodrillo', 'tralalero tralala'). Inoffensif en soi, mais utilisé aussi pour noyer les messages de quelqu'un ou le spammer de façon agressive.",
       "ty": [
+        "meme",
         "slang",
-        "comportement",
-        "meme"
+        "son"
       ],
-      "v": "https://www.tiktok.com/@c.turt/video/7421674252073749792",
-      "da": "mi-mars 2026",
-      "du": 5,
-      "c": "morale",
-      "hashtag": "#glazing",
-      "Overall Posts": "30.9 Thousand",
-      "Overall Views": "722.1 Million",
-      "Views / Post": "",
-      "video_views": 6900000
+      "v": "https://www.tiktok.com/@spacexphysics/video/7413724923065027873",
+      "da": "fin janvier 2026",
+      "du": 9,
+      "c": [
+        "virtuelle"
+      ],
+      "hashtag": "#brain",
+      "Overall Posts": "447.1 Thousand",
+      "Overall Views": "7.5 Billion",
+      "Views / Post": "16,775",
+      "video_views": 36900000
     },
     {
-      "ti": "Caught in 4K Collège",
-      "m": "#caughtin4kfr",
-      "d": "Filmer discrètement un camarade dans une situation embarrassante (erreur, émotion, moment intime) et poster la vidéo sans son accord. Le terme 'caught in 4K' signifie 'pris en flagrant délit en HD'. Risque sérieux de harcèlement filmé.",
+      "ti": "Soft Life Flex Collège",
+      "m": "#softlifeflex",
+      "d": "Les ados (surtout filles) partagent des vidéos esthétiques de leur quotidien 'parfait' : chambre rangée, goûter chic, routine beauté. Crée une pression à paraître dans une vie idéale et peut générer de la honte chez ceux qui n'ont pas les moyens de suivre.",
       "ty": [
         "format",
-        "comportement",
-        "slang"
+        "comportement"
       ],
-      "v": "https://www.tiktok.com/@kelvin042__/video/7562171880355007755",
-      "da": "février 2026",
+      "v": "https://www.tiktok.com/@renderx20/video/7584797288963247374",
+      "da": "mi-février 2026",
       "du": 7,
-      "c": "physique",
-      "hashtag": "#caughtin4k",
-      "Overall Posts": "86.1 Thousand",
-      "Overall Views": "4.5 Billion",
-      "Views / Post": "",
-      "video_views": 6600000
+      "c": [
+        "morale",
+        "virtuelle"
+      ],
+      "hashtag": "#soft",
+      "Overall Posts": "4.2 Million",
+      "Overall Views": "12 Billion",
+      "Views / Post": "2,857",
+      "video_views": 44400000
     }
   ],
   "synthese": {
     "top3_comprendre": [
-      "Aura Farming",
-      "Brainrot Vocal",
-      "Sigma Silence"
+      "Aura Check : pour comprendre la hiérarchie sociale invisible de la classe de votre enfant",
+      "Roman Empire Perso : pour décoder ce qui occupe vraiment son esprit",
+      "Brain Rot Sound Spam : pour ne plus être perdu face aux phrases absurdes qu'il répète"
     ],
     "top3_surveiller": [
-      "Caught in 4K Collège",
-      "Outfit Rating Snap",
-      "Looksmaxxing Collège"
+      "Looksmaxxing Collège : obsession du physique précoce, surtout chez les garçons, risque de dysmorphophobie",
+      "POV Harcèlement Inversé : des situations de harcèlement réel déguisées en sketchs TikTok",
+      "Sigma Grindset Junior : valorisation de l'isolement social présentée comme une force, peut masquer une vraie solitude"
     ],
     "normal": [
       "NPC Freeze Challenge",
-      "Rizz Test IRL",
-      "POV Trauma Dump",
-      "Glazing Wars"
+      "Delulu Arc",
+      "Skibidi Lore Collège",
+      "Soft Life Flex Collège"
     ],
-    "conseil": "Ne pas réagir avec panique aux mots bizarres (brainrot, rizz, aura) : demandez à votre enfant de vous expliquer, c'est une porte d'entrée. En revanche, vérifiez régulièrement Snapchat et TikTok pour des vidéos de camarades filmés sans consentement. Le looksmaxxing mérite une conversation calme sur l'image corporelle, sans jugement."
+    "conseil": "Ne pas réagir avec panique face au vocabulaire bizarre ou aux memes absurdes : c'est souvent du second degré générationnel. En revanche, si votre enfant parle beaucoup de son 'aura', de son physique ou semble valoriser le fait d'être seul, ouvrez la conversation sans juger. Demandez-lui de vous montrer ses TikTok préférés : c'est la meilleure façon d'entrer dans son monde."
   }
 }
